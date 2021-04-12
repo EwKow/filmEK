@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="PL">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Movie application</title>
+    <link rel="stylesheet" href="css/movies.css" type="text/css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <script src="https://netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <!--<script th:src="@{/webjars/jquery/3.1.1/jquery.min.js}"></script>-->
+    <script type="text/javascript" src="./controller.js"></script>
+    <script type="text/javascript" src="./stomp.js"></script>
+    <script>
+
+        function openForm() {
+            document.getElementById("myForm").style.display = "block";
+        }
+
+        function closeForm() {
+            document.getElementById("myForm").style.display = "none";
+        }
+
+    </script>
+
+</head>
+<body>
+
+<nav th:replace="fragments :: navigation_bar"></nav>
+
+<div th:replace="fragments :: filter_bar"></div>
+
+<div class="container-fluid">
+    <div class="row">
+                <!--        <div th:if="${not #lists.isEmpty(search)}">-->
+        <!--<div th:if="${search!=null}">-->
+            <!--<div class="table-responsive">-->
+                <!--<table class="table">-->
+                    <!--<tr>-->
+                        <!--<th></th>-->
+                        <!--<th>Tytuł filmu</th>-->
+                        <!--<th colspan="2">Średnia ocena</th>-->
+                    <!--</tr>-->
+                    <!--<tbody>-->
+                    <!--<tr th:each="search : ${search}">-->
+                        <!--&lt;!&ndash;<td><a th:href="@{'/movie/' + ${search.movieId}}" th:text="${search.movieId}"></a></td>&ndash;&gt;-->
+                        <!--<td><img th:src="${'https://image.tmdb.org/t/p/w500' + search.posterPath}"-->
+                                 <!--height="160" width="110"/></td>-->
+                        <!--<td width="80%"><h3><a th:href="@{'/movie/' + ${search.id}}"-->
+                                               <!--th:text="${search.title + ' (' + search.releaseDate + ')'}"-->
+                                               <!--style="color: black"> </a>-->
+                        <!--</h3>-->
+                            <!--<h5><label th:text="${search.originalTitle}"></label></h5>-->
+                        <!--</td>-->
+
+                        <!--<td width="7%"><br>-->
+                            <!--<h2><label th:text="${search.voteAverage}"></label></h2></td>-->
+                        <!--<td><br>-->
+
+
+
+                            <!--<h3><img-->
+                                    <!--src="https://cdn2.iconfinder.com/data/icons/crystalproject/crystal_project_256x256/apps/keditbookmarks.png"-->
+                                    <!--width="30" height="30"></h3></td>-->
+                    <!--</tr>-->
+                    <!--</tbody>-->
+                <!--</table>-->
+            <!--</div>-->
+
+        <!--</div>-->
+        <!--<div th:unless="${#lists.isEmpty(search)}">-->
+        <div class="card-group col-lg-2 col-md-3 col-sm-4" th:each="movie: ${listMovies}">
+            <div class="card">
+                <div class="box-poster">
+                    <img th:src="${'https://image.tmdb.org/t/p/w500' + movie.posterPath}"
+                         class="card-img-top img-poster">
+
+                    <img src="https://cdn2.iconfinder.com/data/icons/crystalproject/crystal_project_256x256/apps/keditbookmarks.png"
+                         class="star-poster"></h2>
+                    <span th:text="${movie.voteAverage}" class="vote-poster"></span>
+                </div>
+
+                <div class="card-body">
+                    <h6 th:text="${movie.title}" class="card-title">Title</h6>
+                    <a th:href="@{/movie/{movieId} (movieId=${movie.id})}" class="btn btn-light button-poster">O
+                        Filmie</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="fixed-bottom footer">
+    <div class="container">
+    <div class="content">
+        <!--<nav class="justify-content-center">-->
+            <div th:fragment='paginationbar'>
+                <ul class="pagination">
+                    <li class="page-item" th:class="${page.firstPage}?'disabled':''">
+                        <span th:if='${page.firstPage}' class="page-link">← Pierwsza</span>
+                        <a th:if='${not page.firstPage}' th:href='@{${page.url}(page=0,size=${page.size})}'
+                           class="page-link">←
+                            Pierwsza</a>
+                    </li>
+                    <li class="page-item" th:class="${page.hasPreviousPage}? '' : 'disabled'">
+                        <span th:if='${not page.hasPreviousPage}' class="page-link">«</span>
+                        <a th:if='${page.hasPreviousPage}'
+                           th:href='@{${page.url}(page=${page.number-2},size=${page.size})}'
+                           title='Go to previous page' class="page-link">«</a>
+                    </li>
+                    <li class="page-item" th:each='item : ${page.items}' th:class="${item.current}? 'active' : ''">
+                        <span th:if='${item.current}' th:text='${item.number}' class="page-link">1</span>
+                        <a th:if='${not item.current}'
+                           th:href='@{${page.url}(page=${item.number-1},size=${page.size})}' class="page-link"><span
+                                th:text='${item.number}'>1</span></a>
+                    </li>
+                    <li class="page-item" th:class="${page.hasNextPage}? '' : 'disabled'">
+                        <span th:if='${not page.hasNextPage}' class="page-link">»</span>
+                        <a th:if='${page.hasNextPage}'
+                           th:href='@{${page.url}(page=${page.number},size=${page.size})}'
+                           title='Go to next page' class="page-link">»</a>
+                    </li>
+                    <li class="page-item" th:class="${page.lastPage}? 'disabled' : ''">
+                        <span th:if='${page.lastPage}' class="page-link">Ostatnia →</span>
+                        <a th:if='${not page.lastPage}'
+                           th:href='@{${page.url}(page=${page.totalPages - 1},size=${page.size})}' class="page-link">Ostatnia
+                            →</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="chat-box-footer" sec:authorize="isAuthenticated()">
+            <button class="open-button" onclick="openForm()">Chat</button>
+            <div class="chat-popup" id="myForm">
+                    <div class="chat-container">
+                        <div class="panel-body">
+                            <ul class="chat">
+                                <p hidden><label id="user" th:text="${loggedUser.getUserName()}"/><br></p>
+                                <p id="response"></p>
+                            </ul>
+                        </div>
+                        <div class="input-group">
+                            <textarea class="text-box-chat" id="messageToSend" type="text" placeholder="Wpisz wiadomość..."></textarea>
+                            <button class="btn btn-light" onclick="sendMessage()">Send</button>
+                            <button class="btn btn-light cancel" onclick="closeForm()">Close</button>
+                        </div>
+                    </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

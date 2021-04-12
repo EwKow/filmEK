@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:fragment="head_frag">
+    <meta charset="UTF-8">
+    <title>Movie application</title>
+</head>
+<body>
+
+<nav th:fragment="navigation_bar" class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" th:href="@{'/main'}">filmEK</a>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/profile}">Profil</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/logout}">Wyloguj</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAnonymous()">
+                <a class="nav-link" th:href="@{/registration}">Utwórz konto</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAnonymous()">
+                <a class="nav-link" th:href="@{/login}">Zaloguj się</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a class="nav-link" th:href="@{/list_users}">Lista użytkowników</a>
+            </li>
+            <!--<li class="nav-item dropdown">-->
+            <!--<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+            <!--Dropdown-->
+            <!--</a>-->
+            <!--<div class="dropdown-menu" aria-labelledby="navbarDropdown">-->
+            <!--<a class="dropdown-item" href="#">Action</a>-->
+            <!--<a class="dropdown-item" href="#">Another action</a>-->
+            <!--<div class="dropdown-divider"></div>-->
+            <!--<a class="dropdown-item" href="#">Something else here</a>-->
+            <!--</div>-->
+            <!--</li>-->
+            <!--<li class="nav-item">-->
+            <!--<a class="nav-link disabled" href="#">Disabled</a>-->
+            <!--</li>th:field="*{title}"-->
+        </ul>
+        <div class="form-inline my-2 my-lg-0">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/rated_movies/my}">Ocenione filmy</a>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" href="#">Do oglądnięcia</a>
+                </li>
+
+            </ul>
+            <form th:action="@{/search_movies}" method="post" placeholder="Search" aria-label="Search">
+                <input name="search" id="search" type="text" class="search-query form-control"/>
+                <span class="input-group-btn">
+                        <button class="btn btn-light" type="submit">Szukaj filmu</button>
+                    </span>
+            </form>
+        </div>
+    </div>
+</nav>
+<div th:fragment="filter_bar" class="container-fluid">
+    <form th:action="@{/filter_movies}" method="post">
+        <div class="row filter-row">
+            <select class="form-control col-2" id="genre" name="genre">
+                <option selected value="">Wybierz gatunek</option>
+                <option value="przygodowy">Przygodowy</option>
+                <option value="fantasy">Fantasy</option>
+                <option value="animacja">Animacja</option>
+                <option value="dramat">Dramat</option>
+                <option value="horror">Horror</option>
+                <option value="akcja">Akcja</option>
+                <option value="komedia">Komedia</option>
+                <option value="historyczny">Historyczny</option>
+                <option value="western">Western</option>
+                <option value="thriller">Thriller</option>
+                <option value="kryminał">Kryminał</option>
+                <option value="dokumentalny">Dokumentalny</option>
+                <option value="sci-fi">Sci-Fi</option>
+                <option value="tajemnica">Tajemnica</option>
+                <option value="muzyczny">Muzyczny</option>
+                <option value="romans">Romans</option>
+                <option value="familijny">Familijny</option>
+                <option value="wojenny">Wojenny</option>
+            </select>
+            <div class="label-input">Ocena: Od</div>
+            <input class="form-control col-1" id="voteMin" name="voteMin"/>
+            <div class="label-input">do</div>
+            <input class="form-control col-1" id="voteMax" name="voteMax"/>
+            <div class="label-input">Popularność: Od</div>
+            <input class="form-control col-1" id="popularityMin" name="popularityMin"/>
+            <div class="label-input">do</div>
+            <input class="form-control col-1" id="popularityMax" name="popularityMax"/>
+            <div class="label-input">Data produkcji: od</div>
+            <input class="form-control col-1" type="number" min="1800" max="2099" step="1" placeholder="YYYY" id="yearMin" name="yearMin"/>
+            <div class="label-input">do</div>
+            <input class="form-control col-1" type="number" min="1800" max="2099" step="1" placeholder="YYYY" id="yearMax" name="yearMax"/>
+            <button class="btn btn-light search-button" type="submit">Szukaj filmów</button>
+        </div>
+    </form>
+</div>
+</body>
+</html>

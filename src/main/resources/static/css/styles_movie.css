@@ -1,0 +1,69 @@
+.rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+}
+.raiting-button {
+    border: none;
+    padding: 1px 3px;
+    background: rgba(0,0,0,0.0);
+}
+*:focus{
+    outline: 0 !important;
+}
+@media screen and (max-width: 768px) {
+    .rating > button {
+        width: 0.8em;
+    }
+}
+@media only screen and (min-width: 769px) and (max-width: 1024px)  {
+    .rating > button {
+        width: 0.6em;
+    }
+}
+.rating > button:hover:before,
+.rating > button:hover ~ button:before {
+    color: #ffc200;
+    content: "\2605";
+    position: absolute;
+    background: rgba(0,0,0,0.0);
+}
+.box-title{
+    margin-top: 23px;
+}
+.box-avg_note{
+    margin-top: 23px;
+    background: linear-gradient(to bottom, #f8f9fa 0%, #ffffff 100%);
+
+}
+.avg_note{
+    display: flex;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    text-align: center;
+    margin: auto;
+    width: 50%;
+    font-size: 25px;
+}
+.number-note{
+    text-align: center;
+    display: flex;
+    text-align: center;
+    margin: auto;
+    width: 50%;
+
+}
+.rate-star{
+    margin-left: 10px;
+}
+.genres{
+    font-size: 22px;
+}
+.label-size{
+    font-size: 16px;
+    color: gray;
+}
+.box-button{
+    margin: auto;
+    width: 50%;
+    text-align: center;
+}

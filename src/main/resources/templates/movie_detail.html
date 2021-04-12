@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie application</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="css/styles_movie.css" type="text/css">
+    <link rel="stylesheet" th:href="@{/css/styles_movie.css}"/>
+</head>
+<body>
+
+<nav th:replace="fragments :: navigation_bar"></nav>
+
+<section class="sec1"></section>
+<section class="content">
+    <div class="container">
+        <hr>
+        <div class="row">
+            <div class="col-md-3">
+                <br>
+                    <img th:src="${'https://image.tmdb.org/t/p/w500' + film.posterPath}" width="230" height="300"/>
+
+            </div>
+            <div class="col-md-4 box-title">
+                <h2>
+                        <td th:text="${film.title}"></td>
+                        <br>
+                </h2>
+                <h7>
+                    <td th:text="${film.originalTitle}"></td>
+                </h7>
+                <br><br><br>
+
+                <h4>
+                    <span class="label-size"> Data premiery:</span>
+                    <td th:text="${film.releaseDate}"></td>
+
+                    <br><br>
+                    <span class="label-size">Gatunek:</span>
+                    <div class="genres" th:each="genre : ${film.genres}">
+                        <td th:text="${genre.name}"></td>
+                    </div>
+
+
+                </h4>
+            </div>
+
+
+            <div class="col-md-4 box-avg_note">
+                <h3 class="text-center">Średnia ocena</h3>
+                <div class="avg_note">
+                    <div class="number-note">
+                        <div th:text="${film.voteAverage}"></div>
+                        <img class="rate-star" src="https://cdn2.iconfinder.com/data/icons/crystalproject/crystal_project_256x256/apps/keditbookmarks.png"
+                            width="30" height="30">
+                    </div>
+                 </div>
+<!--                <div sec:authorize="isAuthenticated()">-->
+                    <form method="get" th:object="${ocena}" th:action="@{/edit/{movieId}{ocena}(movieId=${film.id}, ocena=*{ocena})}" >
+<!--                    <form method="post" th:object="${ocena}" th:action="@{/edit/{ocenka}(ocenka=*{getOcena()})}" >-->
+<!--                    <form th:object="${ocena}" method="get" th:action="@{/movie/edit/{ocena}(ocena=${String.valueOf(${ocena.ocena})})}" >-->
+                        <h3 class="text-center">Twoja ocena
+
+                            <div th:if="${currentRaiting==null}" class="rating">
+                                <button th:each="i : ${#numbers.sequence(10,1)}" class="raiting-button" type="submit" name="ocena" id="RadioBtn10" th:value="${i}" th:field="*{ocena}">☆</button>
+
+                            </div>
+                            <div th:unless="${currentRaiting==null}">
+<!--                                <div  th:each="i : ${#numbers.sequence(1,currentRaiting.rating)}">-->
+                                    <img th:each="i : ${#numbers.sequence(1,currentRaiting.rating)}" class="rate-star" src="https://cdn2.iconfinder.com/data/icons/crystalproject/crystal_project_256x256/apps/keditbookmarks.png"
+                                         width="30" height="30">
+<!--                                </div>-->
+                            </div>
+
+                        </h3>
+                        <div class="box-button">
+                            <span class="input-group-btn">
+                                <button class="btn btn-light" name="toSee">Chcę zobaczyć</button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-11 col-md-offset-1 box-overview">
+                    <br><br>
+                    <h4>Opis filmu: <br><br></h4>
+                    <!--<tr th:each="movie : ${movie}">-->
+
+                        <td th:text="${film.overview}"></td>
+                    </tr>
+                    <!--<h1 th:text="${name}"></h1>-->
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>
+
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+    $(function(){
+        $('input[type="radio"]').click(function(){
+            if ($(this).is(':checked'))
+            {
+                alert($(this).val());
+            }
+        });
+    });
+</script>
+
+<!--<script type='text/javascript'>-->
+
+<!--    $(document).ready(function() {-->
+<!--        $('input[type="radio"]').click(function(){-->
+<!--            $('form').submit();-->
+<!--        });-->
+<!--    });-->
+
+<!--</script>-->
