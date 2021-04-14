@@ -35,7 +35,7 @@ public class MovieServiceImpl implements MovieService{
 
 
     final RestTemplate restTemplate = new RestTemplate();
-    @Value("${api.key}")
+    @Value("${apikey}")
     private String key;
 
     public Page<MovieEntity> findPaginatedMovies(Pageable pageable){
@@ -89,12 +89,13 @@ public class MovieServiceImpl implements MovieService{
         }
         return moviesByQuery;
     }
+  
 
     @Override
     public Void saveMovieToDb(Long id) {
         RestTemplate restTemplate = new RestTemplate();
 
-        MovieObject movieObject = restTemplate.getForObject("https://api.themoviedb.org/3/movie/"+ id +"?api_key=e529d754811a8187c547ac59aa92495d", MovieObject.class);
+        MovieObject movieObject = restTemplate.getForObject("https://api.themoviedb.org/3/movie/"+ id +"?api_key=" +key, MovieObject.class);
         DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         List<GenreEntity> genresForMovie = new ArrayList<>();
