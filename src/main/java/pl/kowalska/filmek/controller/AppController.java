@@ -75,21 +75,26 @@ public class AppController {
         model.addAttribute("loggedUser", userDto);
 
         model.addAttribute("page", pageNumbers);
-
+//
+//        if (q != null) {
+//            return String.format("redirect:/?search=%s", q);
         return "index";
+
     }
 
     @GetMapping("/")
     public String init() {
         return "redirect:/main";
     }
-    
+
+
     @GetMapping("/list_users")
     public String viewUsersList(Model model) {
         List<User> listUsers = userService.findAll();
         model.addAttribute("listUsers", listUsers);
         return "users";
     }
+
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     private String deleteUser(@RequestParam String userId) {

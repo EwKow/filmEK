@@ -8,11 +8,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import pl.kowalska.filmek.SearchMovies;
 import pl.kowalska.filmek.model.GenreEntity;
 import pl.kowalska.filmek.model.MovieEntity;
 import pl.kowalska.filmek.moviePojo.MovieObject;
-import pl.kowalska.filmek.moviePojo.Result;
 import pl.kowalska.filmek.repository.GenreRepository;
 import pl.kowalska.filmek.repository.MovieRepository;
 
@@ -89,13 +87,12 @@ public class MovieServiceImpl implements MovieService{
         }
         return moviesByQuery;
     }
-  
 
     @Override
     public Void saveMovieToDb(Long id) {
         RestTemplate restTemplate = new RestTemplate();
 
-        MovieObject movieObject = restTemplate.getForObject("https://api.themoviedb.org/3/movie/"+ id +"?api_key=" +key, MovieObject.class);
+        MovieObject movieObject = restTemplate.getForObject("https://api.themoviedb.org/3/movie/"+ id +"?api_key=e529d754811a8187c547ac59aa92495d", MovieObject.class);
         DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         List<GenreEntity> genresForMovie = new ArrayList<>();

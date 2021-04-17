@@ -35,4 +35,10 @@ public class RatedMoviesByUserServiceImpl implements RatedMoviesByUserService {
         }).collect(Collectors.toList());
         return moviesRatedByUser;
     }
+
+    @Override
+    public List<RatedMoviesByUser> findRatedMovies(Long userId) {
+        return null;
+    }
+
 }

@@ -9,4 +9,6 @@ import java.util.List;
 public interface RatedMoviesByUserService {
 
     List<RatedMoviesByUser> findMoviesAndRatingsByUser (Long userId);
+
+    List<RatedMoviesByUser> findRatedMovies(Long userId);
 }

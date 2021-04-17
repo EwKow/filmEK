@@ -8,7 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import pl.kowalska.filmek.dto.RatedMoviesByUser;
-import pl.kowalska.filmek.dto.Rating;
+import pl.kowalska.filmek.dto.RatingDto;
 import pl.kowalska.filmek.model.MovieEntity;
 import pl.kowalska.filmek.model.MovieRaiting;
 import pl.kowalska.filmek.model.MovieRaitingKey;
@@ -75,6 +75,7 @@ public class MovieController {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String name = authentication.getName();
+        RatingDto ratingDto = new RatingDto();
 
         try {
             MovieEntity selectedMovie = movieService.findSingleMovieInDatabase(movieId);
@@ -84,30 +85,46 @@ public class MovieController {
             MovieObject selectedMovie = movieService.findSingleMovieInTmdb(String.valueOf(movieId));
             model.addAttribute("film", selectedMovie);
         }
-        try {
         Optional<MovieRaiting> movieRatedByLoginUser = movieRaitingService.findRating(movieId);
-        movieRatedByLoginUser.ifPresent(rating -> model.addAttribute("currentRaiting", rating));
-        } catch (NoSuchElementException n) {
-            model.addAttribute("currentRaiting", null);
+        if(!movieRatedByLoginUser.isEmpty()){
+            movieRatedByLoginUser.ifPresent(rating -> {
+                RatingDto ratingDto1 = new RatingDto(rating.getRaitingId().getId(), rating.getRaitingId().getUserId(), rating.getRating(), rating.isToWatch());
+                model.addAttribute("ratingDto", ratingDto1);});
+        }else {
+            ratingDto.setId(movieId);
+            model.addAttribute("ratingDto", ratingDto);
         }
-        model.addAttribute("ocena", new Rating());
+//        model.addAttribute("ratingDto", ratingDto);
         return "movie_detail";
     }
 
-    @GetMapping("/edit/{movieId}")
-    public String addRatingToMovie(@PathVariable Long movieId, @RequestParam Integer ocena) {
+    @PostMapping("/movie/edit")
+    public String addRatingToMovie(@ModelAttribute RatingDto rating,
+                                   @RequestParam(value="action", required=false) String action) {
 
+        Long movieId = rating.getId();
         if(!movieService.checkMovieInDb(movieId)){
             movieService.saveMovieToDb(movieId);
         }
         MovieEntity singleMovieInDatabase = movieService.findSingleMovieInDatabase(movieId);
 
         Optional<User> user = userService.retrieveUserFromSecurityContext();
+        System.out.println(rating.getId() +" "+ rating.getUserId() + "  ocena: " + rating.getRating()+ " do ogl.: " + rating.getToWatch());
         user.ifPresent(usr -> {
-            MovieRaiting movieRaiting = new MovieRaiting(new MovieRaitingKey(usr.getUserId(), singleMovieInDatabase.getId()), ocena, true);
+            if(action!=null){if (action.equals("changeRating"))rating.setRating(0);}  // && rating.getToWatch().equals(0)){movieRaitingService.
+            MovieRaiting movieRaiting = new MovieRaiting(new MovieRaitingKey(usr.getUserId(), singleMovieInDatabase.getId()), rating.getRating(), rating.getToWatch());
             movieRaitingService.save(movieRaiting);
         });
         return String.format("redirect:/movie/%d",movieId);
+    }
+    @PostMapping("/rating/edit")
+    public String rateAgain(@ModelAttribute RatingDto ratingDto, Model model){
+        ratingDto.setRating(null);
+        System.out.println(ratingDto.getId() +" "+ ratingDto.getUserId() + "  ocena: " + ratingDto.getRating()+ " do ogl.: " + ratingDto.getToWatch());
+
+//        movieRaitingService.save();
+        model.addAttribute("ratingDto", ratingDto);
+        return String.format("redirect:/movie/%d",ratingDto.getId());
     }
 
     @GetMapping("/rated_movies/my")
