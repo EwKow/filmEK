@@ -91,7 +91,7 @@
                                 <button th:each="i : ${#numbers.sequence(10,1)}" class="raiting-button" type="submit" name="rating" id="RadioBtn10" th:value="${i}" th:field="*{rating}">☆</button>
                             </div>
                             <div th:unless="${ratingDto.rating==null or ratingDto.rating==0}">
-                                <img th:each="i : ${#numbers.sequence(1,ratingDto.rating)}" class="rate-star" src="https://cdn2.iconfinder.com/data/icons/crystalproject/crystal_project_256x256/apps/keditbookmarks.png" width="30" height="30">
+                                <img th:each="i : ${#numbers.sequence(1,ratingDto.rating)}" class="rate-star" src="https://cdn2.iconfinder.com/data/icons/crystalproject/crystal_project_256x256/apps/keditbookmarks.png" width="20" height="20">
                                 <input type="hidden" th:field="*{rating}">
                                 <button class="btn btn-light" type="submit" name="action" value="changeRating">Oceń ponownie</button>
                             </div>

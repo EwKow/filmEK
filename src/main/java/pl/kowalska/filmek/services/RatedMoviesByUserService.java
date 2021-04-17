@@ -11,4 +11,6 @@ public interface RatedMoviesByUserService {
     List<RatedMoviesByUser> findMoviesAndRatingsByUser (Long userId);
 
     List<RatedMoviesByUser> findRatedMovies(Long userId);
+
+    List<RatedMoviesByUser> findtoWatchMovies(Long userId);
 }

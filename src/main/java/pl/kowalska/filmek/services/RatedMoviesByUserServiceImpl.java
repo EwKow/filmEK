@@ -38,7 +38,24 @@ public class RatedMoviesByUserServiceImpl implements RatedMoviesByUserService {
 
     @Override
     public List<RatedMoviesByUser> findRatedMovies(Long userId) {
-        return null;
+
+        List<RatedMoviesByUser> ratedMovies = new ArrayList<>();
+        findMoviesAndRatingsByUser(userId).forEach(rating -> {
+            if (rating.getRating().getRating() != 0) {
+                ratedMovies.add(rating);
+            }
+        });
+        return ratedMovies;
+    }
+
+    @Override
+    public List<RatedMoviesByUser> findtoWatchMovies(Long userId) {
+
+        List<RatedMoviesByUser> toWatchMovies = new ArrayList<>();
+        findMoviesAndRatingsByUser(userId).forEach(rating -> {
+            if(rating.getRating().isToWatch()){toWatchMovies.add(rating);}
+        });
+        return toWatchMovies;
     }
 
 }

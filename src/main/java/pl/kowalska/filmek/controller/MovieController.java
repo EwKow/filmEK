@@ -73,8 +73,6 @@ public class MovieController {
     @GetMapping("/movie/{movieId}")
     public String viewMovieDetail(Model model, @PathVariable Long movieId) {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String name = authentication.getName();
         RatingDto ratingDto = new RatingDto();
 
         try {
@@ -94,7 +92,6 @@ public class MovieController {
             ratingDto.setId(movieId);
             model.addAttribute("ratingDto", ratingDto);
         }
-//        model.addAttribute("ratingDto", ratingDto);
         return "movie_detail";
     }
 
@@ -109,7 +106,6 @@ public class MovieController {
         MovieEntity singleMovieInDatabase = movieService.findSingleMovieInDatabase(movieId);
 
         Optional<User> user = userService.retrieveUserFromSecurityContext();
-        System.out.println(rating.getId() +" "+ rating.getUserId() + "  ocena: " + rating.getRating()+ " do ogl.: " + rating.getToWatch());
         user.ifPresent(usr -> {
             if(action!=null){if (action.equals("changeRating"))rating.setRating(0);}  // && rating.getToWatch().equals(0)){movieRaitingService.
             MovieRaiting movieRaiting = new MovieRaiting(new MovieRaitingKey(usr.getUserId(), singleMovieInDatabase.getId()), rating.getRating(), rating.getToWatch());
@@ -117,22 +113,13 @@ public class MovieController {
         });
         return String.format("redirect:/movie/%d",movieId);
     }
-    @PostMapping("/rating/edit")
-    public String rateAgain(@ModelAttribute RatingDto ratingDto, Model model){
-        ratingDto.setRating(null);
-        System.out.println(ratingDto.getId() +" "+ ratingDto.getUserId() + "  ocena: " + ratingDto.getRating()+ " do ogl.: " + ratingDto.getToWatch());
-
-//        movieRaitingService.save();
-        model.addAttribute("ratingDto", ratingDto);
-        return String.format("redirect:/movie/%d",ratingDto.getId());
-    }
 
     @GetMapping("/rated_movies/my")
     public String showRatedMovies(Model model) {
 
         Optional<User> user = userService.retrieveUserFromSecurityContext();
 
-        List<RatedMoviesByUser> moviesRatedByUser = ratedMoviesByUserService.findMoviesAndRatingsByUser(user.get().getUserId());
+        List<RatedMoviesByUser> moviesRatedByUser = ratedMoviesByUserService.findRatedMovies(user.get().getUserId());
         model.addAttribute("moviesRatedByUser", moviesRatedByUser);
 
         return "rated_movies";
@@ -145,6 +132,17 @@ public class MovieController {
         List<RatedMoviesByUser> moviesRatedByUser = ratedMoviesByUserService.findMoviesAndRatingsByUser(userByUsername.getUserId());
         model.addAttribute("moviesRatedByUser", moviesRatedByUser);
         return "rated_movies";
+    }
+
+    @GetMapping("/toWatch_movies")
+    public String showToWatchMovies(Model model) {
+
+        Optional<User> user = userService.retrieveUserFromSecurityContext();
+
+        List<RatedMoviesByUser> moviesToWatch = ratedMoviesByUserService.findtoWatchMovies(user.get().getUserId());
+        model.addAttribute("moviesToWatch", moviesToWatch);
+
+        return "toWatch_movies";
     }
 
 }
