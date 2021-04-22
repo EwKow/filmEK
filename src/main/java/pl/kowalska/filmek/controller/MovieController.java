@@ -1,8 +1,6 @@
 package pl.kowalska.filmek.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -21,14 +19,12 @@ import pl.kowalska.filmek.services.MovieService;
 import pl.kowalska.filmek.services.RatedMoviesByUserService;
 import pl.kowalska.filmek.services.UserService;
 
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
-//@RequestMapping(value = "/movie")
 public class MovieController {
 
     @Autowired
