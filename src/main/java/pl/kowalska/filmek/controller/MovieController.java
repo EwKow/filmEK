@@ -83,12 +83,18 @@ public class MovieController {
             MovieObject selectedMovie = movieService.findSingleMovieInTmdb(String.valueOf(movieId));
             model.addAttribute("film", selectedMovie);
         }
-        Optional<MovieRaiting> movieRatedByLoginUser = movieRaitingService.findRating(movieId);
-        if(!movieRatedByLoginUser.isEmpty()){
-            movieRatedByLoginUser.ifPresent(rating -> {
-                RatingDto ratingDto1 = new RatingDto(rating.getRaitingId().getId(), rating.getRaitingId().getUserId(), rating.getRating(), rating.isToWatch());
-                model.addAttribute("ratingDto", ratingDto1);});
-        }else {
+        try {
+            Optional<MovieRaiting> movieRatedByLoginUser = movieRaitingService.findRating(movieId);
+            if (!movieRatedByLoginUser.isEmpty()) {
+                movieRatedByLoginUser.ifPresent(rating -> {
+                    RatingDto ratingDto1 = new RatingDto(rating.getRaitingId().getId(), rating.getRaitingId().getUserId(), rating.getRating(), rating.isToWatch());
+                    model.addAttribute("ratingDto", ratingDto1);
+                });
+            } else {
+                ratingDto.setId(movieId);
+                model.addAttribute("ratingDto", ratingDto);
+            }
+        }catch (NoSuchElementException n) {
             ratingDto.setId(movieId);
             model.addAttribute("ratingDto", ratingDto);
         }
@@ -129,7 +135,7 @@ public class MovieController {
     public String showRatedMoviesByUser(@PathVariable String userName, Model model){
 
         User userByUsername = userService.findUserByUsername(userName);
-        List<RatedMoviesByUser> moviesRatedByUser = ratedMoviesByUserService.findMoviesAndRatingsByUser(userByUsername.getUserId());
+        List<RatedMoviesByUser> moviesRatedByUser = ratedMoviesByUserService.findRatedMovies(userByUsername.getUserId());
         model.addAttribute("moviesRatedByUser", moviesRatedByUser);
         return "rated_movies";
     }
